@@ -1,6 +1,6 @@
 ---
 name: renhua
-description: Chinese AI/tech writing de-AI editor for posts, X/Twitter threads, technical essays, product notes, model reviews, and public-writing drafts. Use when the user asks to 去AI味, 改得像本人, 写推特post, 精修中文AI技术文章, or complains about AI-flavored shells such as 不是A而是B, 真正/其实/本质上, 更重要的是, 冒号讲义腔, 句子缺主语, 动词缩成一个字, 被动语态与幽灵主语, 模糊归因, 同一个对象换着叫, 空泛总结, 顺滑但没作者判断的稿子.
+description: Chinese AI/tech writing de-AI editor for posts, X/Twitter threads, technical essays, product notes, model reviews, and public-writing drafts. 默认用作者本人口吻，可点名切换到专业商务风、技术科普风、亲和对话风、学术研究风。 Use when the user asks to 去AI味, 改得像本人, 写推特post, 精修中文AI技术文章, or complains about AI-flavored shells such as 不是A而是B, 真正/其实/本质上, 更重要的是, 冒号讲义腔, 句子缺主语, 动词缩成一个字, 被动语态与幽灵主语, 模糊归因, 同一个对象换着叫, 空泛总结, 顺滑但没作者判断的稿子.
 ---
 
 # 人话
@@ -720,7 +720,20 @@ The test: does the word carry information (what happened) or just energy (how ex
 
 Rewrite Workflow 第 5 步和这节分工不同：第 5 步和 Before Returning 清单按字符串扫描禁用词，对着清单逐条扫描一遍就能定位到；这节要求把整篇稿子重新读完，检查整段还有没有机械痕迹、形容词和动作词有没有传具体信息、有没有作者自己的判断。两道检查都要各做一遍，不能互相替代。
 
-## Style Rules
+## 风格层
+
+renhua 默认按作者本人的口吻改稿。需要别的语域的时候，用户点名切换到下面的可选风格。
+
+四条规矩，任何风格都不能破：
+
+1. Operating Priorities 和 Hard Bans 对所有风格生效。风格只加正向要求，解锁不了任何一条禁令。想写类比、想用讲义腔冒号、想在结尾升华，换哪种风格都不行。
+2. 风格只管这几样：句子长短和节奏、人称、作者出场多少、术语要不要解释、结尾落在哪、允不允许列表和表格。别的都归通用规则管。
+3. 默认不问用户要哪种风格。没有点名就用默认风格直接改，改完交稿。不要每次停下来让用户选风格，最常走的那条路径不该被拖慢。
+4. 用户点名之后，这一轮从头到尾用同一种风格，中途不换。
+
+切换说法举例：`用技术科普风改`、`这篇走学术风`、`商务风重写一遍`。
+
+## Style Rules（所有风格通用）
 
 - Use first person when the source includes direct testing or judgment.
 - Keep English technical terms that Chinese AI/engineering writers normally use, such as Agent, LLM eval, token, cache, API, GPT, Claude, Codex.
@@ -730,6 +743,61 @@ Rewrite Workflow 第 5 步和这节分工不同：第 5 步和 Before Returning 
 - Keep mild roughness if it carries the author's voice.
 - Do not use emoji, hashtags, Markdown tables, or numbered lists in public posts unless the user asks.
 - Avoid ending with an instruction to the reader. End on a concrete judgment or result.
+
+
+## 默认风格：servasyy 原声
+
+用户没有点名风格的时候用这个。它是作者本人的口吻，这里做的是把 AI 痕迹减掉、把作者原来的语感留住，不是另外套一层改造。
+
+- 面向 X/Twitter 推文、推特长文、技术拆解、模型测评、产品笔记。
+- 段落短，3 到 5 段起步，一段说一件事。
+- 第一人称直说：测过什么、踩过什么坑、得出什么判断，都由作者自己承担。
+- 保留作者的粗糙感和态度词，不要磨平。
+- 结尾落在一条具体判断或者结果上。
+- 要从零写初稿、要定钩子和开头的时候，用 servasyy-tweet-style skill，作者的口吻画像存在那边。renhua 不复制那份画像：那个 skill 负责写出来，这个 skill 负责把 AI 味减掉。
+
+## 可选风格（用户点名才用）
+
+下面四种都继承 Operating Priorities、Hard Bans 和 Style Rules。每种只写它跟默认风格不一样的地方。
+
+### 专业商务风
+
+用在给甲方的商单交付稿、产品介绍、对外报告。
+
+- 人称：以陈述为主，作者的判断单独用第一人称写出来，不要整篇第三人称。
+- 每条判断后面跟一个能核对的东西：数字、日期、版本号、价格、实测结果。跟不上的判断删掉。
+- 结尾写清结论和下一步做什么，不要写成号召。
+- 覆盖 Style Rules：数据成行成列的时候允许用表格，别的列表照旧克制。
+- 覆盖默认风格：粗糙感不保留，态度词收一收，作者的立场还是要在。
+
+### 技术科普风
+
+用在公众号技术拆解，读者不熟这块。
+
+- 术语第一次出现给一句话解释，说清它接收什么、吐出什么，跟 Copula overuse 那节许可的定义句是同一个写法。后面直接用，不再重复解释。
+- 分层讲：是什么 → 怎么做 → 实测下来什么结果。
+- 整篇最多允许一个类比，而且要落在机制上（说清楚这东西怎么运转），不许落在结尾当升华。Metaphor and slogan endings 那节照旧生效。
+- 禁：`核心思想`、`关键是`、`精妙之处`、`有意思的是` 这类引出词，它们跟 Fake insight markers 撞。
+
+### 亲和对话风（公众号长文）
+
+用在公众号的口语长文。跟默认风格的区别在长度和铺垫：默认风格是推特的短平快，这个可以铺开讲。
+
+- 段落比默认风格长，允许先交代背景再给判断。
+- 第一人称，允许口语、转折、插入语。
+- 覆盖默认风格：粗糙感保留得比默认风格更多。
+- 禁：设问句拉互动（`你有没有想过`、`猜猜结果如何`），跟 Command-template openings 的说教收尾同源。
+- 禁：结尾给读者布置行动或者抛启发性问题，照旧落在具体判断上。
+
+### 学术研究风
+
+用在论文解读、开源科学类稿子、研究向的商单。
+
+- 覆盖默认风格：第一人称降到最低，只在作者自己做过实验的时候出现。
+- 覆盖默认风格：粗糙感不保留。
+- 保留原文的限制条件和不确定，这跟 Operating Priorities 第 2 条是一件事，不要为了显得有结论把话说满。
+- 引用一律带出处，按 Vague attribution 那节的三项门槛（是谁、在哪、哪一天，至少写出两项）。
+- 禁：`值得注意的是`、`需要指出的是`、`综上所述`、`由此可见` 这类学术腔套话。
 
 ## Audit Mode
 
@@ -779,5 +847,6 @@ Check the final text for these strings and patterns:
 - synonym rotation（同一个对象轮换称呼）: `这套系统` / `该产品` / `这款工具` / `该方案` / `该框架` / `该模块` / `这块卡` / `计算设备` / `该议题` / `关键焦点`——替换成前文第一次出现的全称，意思没有变化就是同一个对象，写回那个固定称呼；`大模型` / `GPU` / `硬件` 作泛指类别用时不算，thread 每条至少出现一次带型号的全称
 - vague attribution（模糊归因）: `专家认为` / `业内普遍认为` / `有研究表明` / `有开发者反馈` / `多方消息显示` / `据了解` / `一些人指出` / `社区里的说法是` / `网上普遍反映` / `某位开发者`——句子里没有别的可核实事实就整句删掉，带着数字或版本号就只删掉归因短语；只有出处在这次对话里看得见才按原样补回来
 - 三遍自审已经跑完：第一遍重写，第二遍单独重读并按 Audit Mode 格式列出 3 到 6 条（一条都没有发现就写明「第二遍无发现」），第三遍逐条修改完再扫描一次清单
+- 风格层：用户没有点名就用默认风格，点名了就整轮不换；确认这一轮没有靠风格解锁任何一条 Hard Ban（类比、讲义腔冒号、升华收尾、设问拉互动，在任何风格下都禁止）
 
 If found, revise before answering.
